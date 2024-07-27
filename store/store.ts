@@ -8,11 +8,13 @@ interface Video {
 }
 
 interface VideoStore {
-  selectedVideo: Video | null;
   selectedTimestamp: number;
   maxTime: number;
   isLast: boolean;
-  setSelectedVideo: (video: Video) => void;
+  selectedVideo: Video | null;
+  setSelectedVideo: (video: Video | null) => void;
+  completedVideos: Video[];
+  setCompletedVideos: (videos: Video[]) => void;
 }
 
 export const useVideoStore = create<VideoStore>((set) => ({
@@ -20,11 +22,7 @@ export const useVideoStore = create<VideoStore>((set) => ({
   selectedTimestamp: 0,
   maxTime: 0,
   isLast: false,
-  setSelectedVideo: (video) =>
-    set({
-      selectedVideo: video,
-      selectedTimestamp: video.timeStamp,
-      maxTime: video.maxTime,
-      isLast: video.isLast,
-    }),
+  setSelectedVideo: (video) => set({ selectedVideo: video }),
+  completedVideos: [],
+  setCompletedVideos: (videos: Video[]) => set({ completedVideos: videos }),
 }));

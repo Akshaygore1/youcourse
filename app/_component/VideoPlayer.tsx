@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import { useVideoStore } from "../store";
+import { useVideoStore } from "../../store/store";
 import ReactPlayer from "react-player";
-import { Play, Pause, Maximize, Minimize } from "lucide-react";
+import { Play, Pause, Maximize, Minimize, Volume2, Volume } from "lucide-react";
 
 interface VideoPlayerProps {
   selectedVideo: {
@@ -20,7 +20,12 @@ export function formatTime(time: number) {
 }
 
 export default function VideoPlayer() {
-  const { selectedVideo } = useVideoStore();
+  const {
+    selectedVideo,
+    setSelectedVideo,
+    completedVideos,
+    setCompletedVideos,
+  } = useVideoStore();
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const playerRef = useRef<ReactPlayer | null>(null);
   const videoContainerRef = useRef<HTMLDivElement | null>(null);
@@ -31,13 +36,16 @@ export default function VideoPlayer() {
   const [duration, setDuration] = useState(0);
   const [played, setPlayed] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const [muted, setMuted] = useState(false);
 
   useEffect(() => {
     if (selectedVideo) {
-      const { id, timeStamp } = selectedVideo;
+      const { id, timeStamp, maxTime } = selectedVideo;
       const url = `https://www.youtube.com/watch?v=${id}`;
       setVideoUrl(url);
       setKey((prevKey) => prevKey + 1);
+      setCountdown(maxTime - timeStamp);
 
       setTimeout(() => {
         if (playerRef.current) {
@@ -46,6 +54,20 @@ export default function VideoPlayer() {
       }, 100);
     }
   }, [selectedVideo]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+    if (playing && countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
+  }, [playing, countdown]);
 
   const handleReady = () => {
     if (selectedVideo && playerRef.current) {
@@ -76,6 +98,9 @@ export default function VideoPlayer() {
     const seekTo = parseFloat(e.target.value);
     setPlayed(seekTo);
     playerRef.current?.seekTo(seekTo, "seconds");
+    if (selectedVideo) {
+      setCountdown(selectedVideo.maxTime - seekTo);
+    }
   };
 
   const handleFullScreen = () => {
@@ -113,17 +138,27 @@ export default function VideoPlayer() {
     setPlaying(true);
   };
 
-  // ? formatTime(duration - selectedVideo.timeStamp)
-  // : formatTime(
-  //     selectedVideo.maxTime - selectedVideo.timeStamp
-  //   )})
-  console.log("--", playing);
+  const handleMarkAsCompleted = () => {
+    console.log("mark as completed");
+    if (selectedVideo) {
+      setCompletedVideos([
+        ...completedVideos,
+        {
+          id: selectedVideo.id,
+          timeStamp: selectedVideo.timeStamp,
+          maxTime: selectedVideo.maxTime,
+          isLast: selectedVideo.isLast,
+        },
+      ]);
+      setSelectedVideo(null);
+    }
+  };
   return (
-    <div className="flex flex-col gap-2 h-full w-full p-4">
+    <div className="flex flex-col gap-2 h-full w-full p-4 ">
       {videoUrl && (
         <div
           ref={videoContainerRef}
-          className="video-container h-[90vh] w-full relative"
+          className="video-container h-[80vh] w-full relative"
         >
           <ReactPlayer
             ref={playerRef}
@@ -139,21 +174,26 @@ export default function VideoPlayer() {
             height="100%"
             controls={false}
             pip={true}
+            muted={muted}
+            autoPlay={true}
           />
-          <div className="flex flex-row gap-2 p-2 items-center  bottom-4 left-4 right-4 bg-black bg-opacity-50 rounded-lg">
+          <div className="flex flex-row gap-2 p-2 items-center bottom-4 left-4 right-4 rounded-lg">
             <input
               type="range"
               min={minTime}
               max={maxTime ?? duration}
               value={played}
               onChange={handleSeekChange}
-              className="w-full h-1 bg-gray-200 appearance-none rounded-md overflow-hidden outline-none cursor-pointer"
+              className="w-full h-1 bg-gray-200 appearance-none rounded-md overflow-hidden outline-none cursor-pointer "
             />
             <button onClick={() => setPlaying(!playing)} className="text-white">
               {playing ? <Pause /> : <Play />}
             </button>
+            <button onClick={() => setMuted(!muted)} className="text-white">
+              {muted ? <Volume /> : <Volume2 />}
+            </button>
             <div className="flex flex-row gap-1 px-2">
-              <div>{formatTime(played)}</div>
+              <div>{formatTime(countdown)}</div>
               <div>/</div>
               <div>
                 {selectedVideo &&
@@ -167,6 +207,16 @@ export default function VideoPlayer() {
             <button onClick={handleFullScreen} className="text-white">
               {isFullScreen ? <Minimize /> : <Maximize />}
             </button>
+          </div>
+          <div className="flex flex-row gap-2 p-2 items-center bottom-4 left-4 right-4 rounded-lg">
+            <div className="flex flex-1 justify-end gap-2 py-4">
+              <button
+                onClick={handleMarkAsCompleted}
+                className="text-white bg-red-500 p-2 rounded-lg"
+              >
+                Mark As Completed
+              </button>
+            </div>
           </div>
         </div>
       )}

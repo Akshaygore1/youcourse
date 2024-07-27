@@ -1,6 +1,6 @@
-import ChapterCard from "@/app/_component/Chapter";
-import React from "react";
-import { getVideoInfo } from "../utils";
+"use client";
+import React, { useEffect } from "react";
+import ChapterCard from "./Chapter";
 
 interface Thumbnail {
   url: string;
@@ -25,47 +25,33 @@ interface VideoData {
   title: string;
   chapters: Chapters;
 }
-
-async function getDuration(videoId: string): Promise<number> {
-  const res = await fetch(
-    `https://yt.lemnoslife.com/videos?part=contentDetails&id=${videoId}`,
-    { cache: "no-store" }
-  );
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
-  const data = await res.json();
-  return data.items[0]?.contentDetails?.duration || 0;
-}
-
-export default async function ChapterList({
-  params,
+function ChapterList({
+  data,
+  duration,
+  videoId,
 }: {
-  params: { slug: string };
+  data: any;
+  duration: number;
+  videoId: string;
 }) {
-  const data: VideoData = await getVideoInfo(params.slug);
-  const duration = await getDuration(params.slug);
-
   return (
-    <div>
-      {data.chapters && data.chapters.chapters.length > 0 ? (
-        <div className="p-2 flex flex-col gap-2">
-          {data.chapters.chapters.map((chapter, index, arr) => (
-            <ChapterCard
-              title={chapter.title}
-              videoId={params.slug}
-              thumbnails={chapter.thumbnails[0].url}
-              timeStamp={chapter.time}
-              key={chapter.title}
-              nextTimestamp={arr[index + 1]?.time}
-              lastTimestamp={arr[index - 1]?.time}
-              totalDuration={duration}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="text-white">No chapters</div>
-      )}
+    <div className="p-4 flex flex-col gap-2">
+      {data.chapters.chapters.map((chapter: any, index: number, arr: any) => (
+        <ChapterCard
+          title={chapter.title}
+          videoId={videoId}
+          thumbnails={chapter.thumbnails[0].url}
+          timeStamp={chapter.time}
+          key={chapter.title}
+          nextTimestamp={arr[index + 1]?.time}
+          lastTimestamp={arr[index - 1]?.time}
+          totalDuration={duration}
+          chapterIndex={index}
+          totalChapters={arr.length}
+        />
+      ))}
     </div>
   );
 }
+
+export default ChapterList;

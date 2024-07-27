@@ -27,3 +27,8 @@ body {
 .ytp-expand-pause-overlay .ytp-pause-overlay {
   display: none;
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}

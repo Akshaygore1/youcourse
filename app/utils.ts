@@ -51,14 +51,13 @@ export async function getVideoInfo(id: string, options = { chapters: true }) {
       chapters,
     };
   }
-
   return result;
 }
 
 // Helper Functions
 
 async function getJSONFromHTML(url: string) {
-  const response = await fetch(url);
+  const response = await fetch(url, { cache: "no-store" });
   const html = await response.text();
   const scriptContent = extractScriptContent(html, "ytInitialData");
   return JSON.parse(scriptContent);
@@ -90,11 +89,27 @@ function getIntFromDuration(timeStr: string) {
   return isNegative ? -seconds : seconds;
 }
 
-function extractScriptContent(html: string, variableName: string) {
+export function extractScriptContent(html: string, variableName: string) {
   const regex = new RegExp(`var ${variableName} = (.+?);<\/script>`);
   const match = html.match(regex);
   if (match && match[1]) {
     return match[1];
   }
   throw new Error("Could not find script data");
+}
+
+export async function getPlaylistInfo(id: string) {
+  const json = await getJSONFromHTML(
+    `https://www.youtube.com/playlist?list=${id}`
+  );
+  let result: any = { id };
+
+  // Get total duration
+  const playlistDetails = json.playlistSidebarRenderer;
+  if (playlistDetails) {
+    result.duration = parseInt(playlistDetails.videoCountText.runs[0].text, 10);
+    result.title = playlistDetails.title.simpleText;
+  }
+
+  return result;
 }

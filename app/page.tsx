@@ -2,7 +2,8 @@
 
 import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
-import { useVideoStore } from "./store";
+import { useVideoStore } from "../store/store";
+import { CircleArrowRight } from "lucide-react";
 
 export default function Home() {
   const [url, setUrl] = useState<string | null>(null);
@@ -11,32 +12,53 @@ export default function Home() {
 
   const handleClick = () => {
     if (url) {
-      const videoId = url.split("v=")[1];
-      push(`/video/${videoId}`);
+      if (url.includes("youtube.com/watch?v=")) {
+        let videoId = url.split("v=")[1];
+        // console.log("---", url.split("v="));
+        if (videoId.includes("&")) {
+          videoId = videoId.split("&")[0];
+        }
+        console.log("--", videoId);
+        push(`/video/${videoId}`);
+      }
+      if (url.includes("youtube.com/playlist?list=")) {
+        const playlistId = url.split("list=")[1];
+        push(`/playlist/${playlistId}`);
+      }
     }
   };
 
   return (
-    <main className=" min-h-screen p-24">
-      <div className="flex justify-center items-center">
-        Make Course Out of Your Youtube Video
-      </div>
-      <div className="flex justify-center items-center">
-        <input
-          type="text"
-          placeholder="Enter Youtube Video ID"
-          onChange={(e) => setUrl(e.target.value)}
-          className="w-full p-2 text-black"
-        />
-      </div>
-      <div className="flex justify-center items-center">
-        <button
-          onClick={() => {
-            handleClick();
-          }}
-        >
-          Open Youtube
-        </button>
+    <main className="relative h-screen w-screen bg-black">
+      <div className="flex justify-center items-center flex-col h-full">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
+        <div className="absolute left-0 right-0 top-[-10%] h-[1000px] w-[1000px] rounded-full bg-[radial-gradient(circle_400px_at_50%_300px,#fbfbfb36,#000)]"></div>
+        <h2 className="relative z-10 text-center text-4xl font-semibold text-gray-50 sm:text-6xl mb-4">
+          Welcome to
+          <span className="text-red-500"> Youcourse</span>
+        </h2>
+        <div className="relative z-10 text-2xl inline-flex bg-gradient-to-r  bg-[200%_auto] bg-clip-text leading-tight text-transparent from-neutral-100 via-slate-400 to-neutral-400 animate-text-gradient">
+          Transform YouTube Videos into Structured Courses
+        </div>
+        <div className="relative z-10 mt-8 w-full max-w-md px-4">
+          <input
+            type="text"
+            placeholder="Enter YouTube Video Url Or Playlist Url"
+            onChange={(e) => setUrl(e.target.value)}
+            className="w-full p-3 text-black rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="relative z-10 mt-4">
+          <button
+            onClick={handleClick}
+            className="px-6 py-3 gap-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-300 flex flex-row justify-center items-center"
+          >
+            Convert to Course
+            <span>
+              <CircleArrowRight />
+            </span>
+          </button>
+        </div>
       </div>
     </main>
   );

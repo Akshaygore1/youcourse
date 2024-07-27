@@ -1,8 +1,9 @@
 "use client";
 import Image from "next/image";
 import { formatTime } from "../utils";
-import { useVideoStore } from "../store";
-import { Play } from "lucide-react";
+import { useVideoStore } from "../../store/store";
+import { CirclePause, CirclePlay, Check, Lock } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface ChapterCardProps {
   title: string;
@@ -12,6 +13,8 @@ interface ChapterCardProps {
   lastTimestamp: number;
   videoId: string;
   totalDuration: number;
+  chapterIndex: number;
+  totalChapters: number;
 }
 
 export default function ChapterCard({
@@ -22,33 +25,67 @@ export default function ChapterCard({
   videoId,
   lastTimestamp,
   totalDuration,
+  chapterIndex,
+  totalChapters,
 }: ChapterCardProps) {
-  const { setSelectedVideo } = useVideoStore();
+  const { selectedVideo, setSelectedVideo, completedVideos } = useVideoStore();
+  const [isUnlocked, setIsUnlocked] = useState(chapterIndex === 0);
+
+  useEffect(() => {
+    const prevChapterCompleted =
+      chapterIndex === 0 ||
+      completedVideos.some((video) => video.timeStamp === lastTimestamp);
+    setIsUnlocked(prevChapterCompleted);
+  }, [completedVideos, chapterIndex, lastTimestamp]);
+
   const handleClick = (
     videoId: string,
     timeStamp: number,
     maxTime: number,
     isLast: boolean
   ) => {
-    setSelectedVideo({ id: videoId, timeStamp, maxTime, isLast });
+    if (isUnlocked) {
+      setSelectedVideo({ id: videoId, timeStamp, maxTime, isLast });
+    }
   };
+
+  const isCompleted = completedVideos.some(
+    (video) => video.timeStamp === timeStamp
+  );
+
   return (
-    <div className="flex flex-row p-4 gap-4">
+    <div
+      className={`flex flex-row p-4 gap-4 border border-b border-white rounded-md ${
+        !isUnlocked ? "opacity-50" : ""
+      }`}
+    >
       <div
-        className="flex items-center justify-center"
+        className="flex items-center justify-center cursor-pointer"
         onClick={() => {
           handleClick(
             videoId,
             timeStamp,
             nextTimestamp ? nextTimestamp : totalDuration,
-            nextTimestamp ? false : true
+            chapterIndex === totalChapters - 1
           );
         }}
       >
-        <Play />
+        {!isUnlocked ? (
+          <Lock color="gray" />
+        ) : isCompleted ? (
+          <Check color="green" />
+        ) : selectedVideo && selectedVideo.timeStamp === timeStamp ? (
+          <CirclePause color="red" />
+        ) : (
+          <CirclePlay color="red" />
+        )}
       </div>
       <div className="flex flex-col gap-1">
-        <div className="text-white text-md">{title}</div>
+        <div
+          className={`text-md ${isUnlocked ? "text-white" : "text-gray-400"}`}
+        >
+          {title}
+        </div>
         <div className="text-gray-400 text-sm">
           {formatTime(
             nextTimestamp
