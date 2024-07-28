@@ -41,13 +41,14 @@ async function getDuration(videoId: string): Promise<number> {
 }
 
 export default async function Chaptersidebar({
-  params,
+  data,
+  duration,
+  videoId,
 }: {
-  params: { slug: string };
+  data: VideoData;
+  duration: number;
+  videoId: string;
 }) {
-  const data: VideoData = await getVideoInfo(params.slug);
-  const duration = await getDuration(params.slug);
-
   return (
     <div className="flex flex-col h-full">
       <div className="sticky top-0 z-10 px-4 py-2">
@@ -58,11 +59,7 @@ export default async function Chaptersidebar({
       <div className="flex-1 overflow-y-auto">
         {data.chapters && data.chapters.chapters.length > 0 ? (
           <div className="flex flex-col gap-2">
-            <ChapterList
-              data={data}
-              duration={duration}
-              videoId={params.slug}
-            />
+            <ChapterList data={data} duration={duration} videoId={videoId} />
           </div>
         ) : (
           <div className="p-4 text-white">No chapters</div>

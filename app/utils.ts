@@ -9,11 +9,8 @@ export async function getVideoInfo(id: string, options = { chapters: true }) {
   let result: any = { id };
 
   // Get total duration
-  const videoDetails = json.videoDetails;
-  if (videoDetails) {
-    result.duration = parseInt(videoDetails.lengthSeconds, 10);
-    result.title = videoDetails.title;
-  }
+  result.title =
+    json.contents.twoColumnWatchNextResults.results.results.contents[0].videoPrimaryInfoRenderer.title.runs[0].text;
 
   if (options.chapters) {
     let chapters = [];
@@ -112,4 +109,13 @@ export async function getPlaylistInfo(id: string) {
   }
 
   return result;
+}
+
+export function convertSecondsToHours(seconds: number) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+  return `${hours}:${minutes < 10 ? "0" : ""}${minutes}:${
+    remainingSeconds < 10 ? "0" : ""
+  }${remainingSeconds}`;
 }
