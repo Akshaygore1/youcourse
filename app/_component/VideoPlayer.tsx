@@ -2,7 +2,15 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useVideoStore } from "../../store/store";
 import ReactPlayer from "react-player";
-import { Play, Pause, Maximize, Minimize, Volume2, Volume } from "lucide-react";
+import {
+  Play,
+  Pause,
+  Maximize,
+  Minimize,
+  Volume2,
+  Volume,
+  VolumeX,
+} from "lucide-react";
 
 interface VideoPlayerProps {
   selectedVideo: {
@@ -177,37 +185,64 @@ export default function VideoPlayer() {
             muted={muted}
             autoPlay={true}
           />
-          <div className="flex flex-row gap-2 p-2 items-center bottom-4 left-4 right-4 rounded-lg">
-            <input
-              type="range"
-              min={minTime}
-              max={maxTime ?? duration}
-              value={played}
-              onChange={handleSeekChange}
-              className="w-full h-1 bg-gray-200 appearance-none rounded-md overflow-hidden outline-none cursor-pointer "
-            />
-            <button onClick={() => setPlaying(!playing)} className="text-white">
-              {playing ? <Pause /> : <Play />}
-            </button>
-            <button onClick={() => setMuted(!muted)} className="text-white">
-              {muted ? <Volume /> : <Volume2 />}
-            </button>
-            <div className="flex flex-row gap-1 px-2">
-              <div>{formatTime(countdown)}</div>
-              <div>/</div>
-              <div>
-                {selectedVideo &&
-                  (selectedVideo.isLast
-                    ? formatTime(duration - selectedVideo.timeStamp)
-                    : formatTime(
-                        selectedVideo.maxTime - selectedVideo.timeStamp
-                      ))}
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+            <div className="flex flex-col gap-2">
+              {/* Progress bar */}
+              <input
+                type="range"
+                min={minTime}
+                max={maxTime ?? duration}
+                value={played}
+                onChange={handleSeekChange}
+                className="w-full h-2 bg-gray-400 appearance-none rounded-full outline-none cursor-pointer"
+                style={{
+                  background: `linear-gradient(to right, #ff0000 0%, #ff0000 ${
+                    (played / (maxTime ?? duration)) * 100
+                  }%, #4b5563 ${
+                    (played / (maxTime ?? duration)) * 100
+                  }%, #4b5563 100%)`,
+                }}
+              />
+
+              {/* Controls and time */}
+              <div className="flex items-center justify-between text-white">
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setPlaying(!playing)}
+                    className="hover:text-red-500 transition-colors"
+                  >
+                    {playing ? <Pause size={24} /> : <Play size={24} />}
+                  </button>
+                  <button
+                    onClick={() => setMuted(!muted)}
+                    className="hover:text-red-500 transition-colors"
+                  >
+                    {muted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+                  </button>
+                  <div className="text-sm">
+                    {formatTime(played)} / {formatTime(maxTime ?? duration)}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="text-sm">
+                    {formatTime(countdown)} remaining
+                  </div>
+                  <button
+                    onClick={handleFullScreen}
+                    className="hover:text-red-500 transition-colors"
+                  >
+                    {isFullScreen ? (
+                      <Minimize size={24} />
+                    ) : (
+                      <Maximize size={24} />
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
-            <button onClick={handleFullScreen} className="text-white">
-              {isFullScreen ? <Minimize /> : <Maximize />}
-            </button>
           </div>
+
           <div className="flex flex-row gap-2 p-2 items-center bottom-4 left-4 right-4 rounded-lg">
             <div className="flex flex-1 justify-end gap-2 py-4">
               <button
