@@ -1,6 +1,4 @@
-import ChapterCard from "@/app/_component/Chapter";
 import React from "react";
-import { getVideoInfo } from "../utils";
 import Progressbar from "./Progressbar";
 import ChapterList from "./Chapterlist";
 
