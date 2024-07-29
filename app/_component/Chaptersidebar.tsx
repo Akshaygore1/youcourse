@@ -1,6 +1,6 @@
 import React from "react";
 import Progressbar from "./Progressbar";
-import ChapterList from "./chapterlist";
+import ChapterList from "./Chapterlist";
 
 interface Thumbnail {
   url: string;
