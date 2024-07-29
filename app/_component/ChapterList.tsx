@@ -25,7 +25,7 @@ interface VideoData {
   title: string;
   chapters: Chapters;
 }
-export default function ChapterList({
+export default function Chapterlist({
   data,
   duration,
   videoId,
