@@ -1,6 +1,6 @@
 import React from "react";
 import Progressbar from "./Progressbar";
-import ChapterList from "./Chapterlist";
+import Chapterlist from "./Chapterlist";
 
 interface Thumbnail {
   url: string;
@@ -57,7 +57,7 @@ export default async function Chaptersidebar({
       <div className="flex-1 overflow-y-auto">
         {data.chapters && data.chapters.chapters.length > 0 ? (
           <div className="flex flex-col gap-2">
-            <ChapterList data={data} duration={duration} videoId={videoId} />
+            <Chapterlist data={data} duration={duration} videoId={videoId} />
           </div>
         ) : (
           <div className="p-4 text-white">No chapters</div>
