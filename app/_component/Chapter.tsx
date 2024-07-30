@@ -55,9 +55,8 @@ export default function ChapterCard({
 
   return (
     <div
-      className={`flex flex-row p-4 gap-4 border border-b border-white rounded-md ${
-        !isUnlocked ? "opacity-50" : ""
-      }`}
+      className={`flex flex-row p-4 gap-4 border border-b border-white rounded-md ${!isUnlocked ? "opacity-50" : ""
+        }`}
     >
       <div
         className="flex items-center justify-center cursor-pointer"

@@ -21,7 +21,7 @@ export default function MyCourses({
       const videoData = {
         duration,
         title,
-        chapters,
+        chapters: chapters.chapters,
       };
       localStorage.setItem(`video-${videoId}`, JSON.stringify(videoData));
     }
@@ -32,19 +32,19 @@ export default function MyCourses({
   }, [data, duration, videoId]);
 
   return (
-    <div className="flex flex-row gap-2">
+    <div className="flex flex-row flex-wrap gap-2 h-auto">
       {storageKeys.map((key) => {
         const storedData = localStorage.getItem(key);
         if (storedData) {
           const parsedData = JSON.parse(storedData);
           return (
-            <div key={key}>
-              <Card
-                title={parsedData.title}
-                duration={parsedData.duration}
-                chapters={parsedData.chapters}
-              />
-            </div>
+            <Card
+              title={parsedData.title}
+              duration={parsedData.duration}
+              chapters={parsedData.chapters}
+              videoId={key.split("-")[1]}
+              key={key}
+            />
           );
         }
         return null;

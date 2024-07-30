@@ -11,6 +11,7 @@ import {
   Volume,
   VolumeX,
 } from "lucide-react";
+import Link from "next/link";
 
 interface VideoPlayerProps {
   selectedVideo: {
@@ -163,10 +164,10 @@ export default function VideoPlayer() {
   };
   return (
     <div className="flex flex-col gap-2 h-full w-full p-4 ">
-      {videoUrl && (
+      {videoUrl ? (
         <div
           ref={videoContainerRef}
-          className="video-container h-[80vh] w-full relative"
+          className="video-container h-[90vh] w-full relative"
         >
           <ReactPlayer
             ref={playerRef}
@@ -196,11 +197,9 @@ export default function VideoPlayer() {
                 onChange={handleSeekChange}
                 className="w-full h-2 bg-gray-400 appearance-none rounded-full outline-none cursor-pointer"
                 style={{
-                  background: `linear-gradient(to right, #ff0000 0%, #ff0000 ${
-                    (played / (maxTime ?? duration)) * 100
-                  }%, #4b5563 ${
-                    (played / (maxTime ?? duration)) * 100
-                  }%, #4b5563 100%)`,
+                  background: `linear-gradient(to right, #ff0000 0%, #ff0000 ${(played / (maxTime ?? duration)) * 100
+                    }%, #4b5563 ${(played / (maxTime ?? duration)) * 100
+                    }%, #4b5563 100%)`,
                 }}
               />
 
@@ -244,7 +243,12 @@ export default function VideoPlayer() {
           </div>
 
           <div className="flex flex-row gap-2 p-2 items-center bottom-4 left-4 right-4 rounded-lg">
-            <div className="flex flex-1 justify-end gap-2 py-4">
+            <div className="flex flex-1 justify-between gap-2 py-4">
+              <Link href="/">
+                <button className="text-white bg-red-500 p-2 rounded-lg">
+                  Back To Courses
+                </button>
+              </Link>
               <button
                 onClick={handleMarkAsCompleted}
                 className="text-white bg-red-500 p-2 rounded-lg"
@@ -252,6 +256,12 @@ export default function VideoPlayer() {
                 Mark As Completed
               </button>
             </div>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2 h-full w-full p-4">
+          <div className="flex flex-1 justify-center items-center">
+            <div className="text-white">Select a video to start</div>
           </div>
         </div>
       )}
