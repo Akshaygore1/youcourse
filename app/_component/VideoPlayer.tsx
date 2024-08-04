@@ -167,7 +167,7 @@ export default function VideoPlayer() {
       {videoUrl ? (
         <div
           ref={videoContainerRef}
-          className="video-container h-[90vh] w-full relative"
+          className="video-container h-[85vh] w-full relative"
         >
           <ReactPlayer
             ref={playerRef}
@@ -195,11 +195,11 @@ export default function VideoPlayer() {
                 max={maxTime ?? duration}
                 value={played}
                 onChange={handleSeekChange}
-                className="w-full h-2 bg-gray-400 appearance-none rounded-full outline-none cursor-pointer"
+                className="w-full h-1 bg-gray-400 appearance-none rounded-full outline-none cursor-pointer"
                 style={{
-                  background: `linear-gradient(to right, #ff0000 0%, #ff0000 ${(played / (maxTime ?? duration)) * 100
-                    }%, #4b5563 ${(played / (maxTime ?? duration)) * 100
-                    }%, #4b5563 100%)`,
+                  background: `linear-gradient(to right, #faf7f7 0%, #faf7f7 ${(played / (maxTime ?? duration)) * 100
+                    }%, #f7fafc ${(played / (maxTime ?? duration)) * 100
+                    }%, #f7fafc 100%)`,
                 }}
               />
 

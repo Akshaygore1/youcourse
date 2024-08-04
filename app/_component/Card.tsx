@@ -15,6 +15,7 @@ function Card({
   videoId: string;
 }) {
   const router = useRouter();
+  console.log("---", title, duration, chapters, videoId);
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm mx-auto hover:shadow-xl transition-shadow duration-300 ease-in-out">
       <h2 className="text-md font-bold text-gray-800 mb-2 min-h-[3rem]">

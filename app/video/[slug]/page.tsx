@@ -19,6 +19,7 @@ interface Chapter {
 export default function Page({ params }: { params: { slug: string } }) {
   const [data, setData] = useState<Chapter[]>();
   const [duration, setDuration] = useState<number>();
+  const [completed, setCompleted] = useState<number>(0);
   useEffect(() => {
     const data = localStorage.getItem(`video-${params.slug}`);
 
@@ -26,6 +27,7 @@ export default function Page({ params }: { params: { slug: string } }) {
       const parseData = JSON.parse(data);
       setData(parseData?.chapters);
       setDuration(parseData?.duration);
+      setCompleted(parseData?.completed);
     }
   }, [params.slug]);
   return (

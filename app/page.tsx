@@ -30,9 +30,17 @@ export default function Home() {
 
   return (
     <main className="relative h-screen w-screen bg-black">
+      <div className="absolute top-4 right-4 z-20">
+        <button
+          onClick={() => push('/mycourse')}
+          className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-300"
+        >
+          My Courses
+        </button>
+      </div>
       <div className="flex justify-center items-center flex-col h-full">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
-        <div className="absolute left-0 right-0 top-[-10%] h-[1000px] w-[1000px] rounded-full bg-[radial-gradient(circle_400px_at_50%_300px,#fbfbfb36,#000)]"></div>
+        <div className="absolute left-0 right-0 top-[-10%] h-[800px] w-[800px] rounded-full bg-[radial-gradient(circle_400px_at_50%_300px,#fbfbfb36,#000)]"></div>
         <h2 className="relative z-10 text-center text-4xl font-semibold text-gray-50 sm:text-6xl mb-4">
           Welcome to
           <span className="text-red-500"> Youcourse</span>
