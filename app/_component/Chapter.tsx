@@ -16,6 +16,8 @@ interface ChapterCardProps {
   chapterIndex: number;
   totalChapters: number;
   index: number;
+  isCompleted: boolean;
+  isUnlocked: boolean;
 }
 
 export default function ChapterCard({
@@ -29,29 +31,11 @@ export default function ChapterCard({
   chapterIndex,
   totalChapters,
   index,
+  isCompleted,
+  isUnlocked,
 }: ChapterCardProps) {
+  console.log("--", isCompleted, "isUnlocked", isUnlocked);
   const { selectedVideo, setSelectedVideo, completedVideos } = useVideoStore();
-
-  const [isUnlocked, setIsUnlocked] = useState(completedVideos.length === 0);
-  const isCompleted = completedVideos.some(
-    (video) => video.timeStamp === timeStamp
-  );
-
-  useEffect(() => {
-    const prevChapterCompleted =
-      chapterIndex === 0 ||
-      completedVideos.some((video) => video.timeStamp === lastTimestamp);
-    setIsUnlocked(prevChapterCompleted);
-  }, [completedVideos, chapterIndex, lastTimestamp]);
-
-  useEffect(() => {
-    const data = localStorage.getItem(`video-${videoId}`);
-    let localObjData = data ? JSON.parse(data) : { completed: 0 };
-    const completed = localObjData.completed;
-
-    // Unlock this chapter if it's the first one or if the previous chapter is completed
-    setIsUnlocked(index === 0 || completed >= index);
-  }, [index, videoId, completedVideos]);
 
   const handleClick = (
     videoId: string,
@@ -59,15 +43,7 @@ export default function ChapterCard({
     maxTime: number,
     isLast: boolean
   ) => {
-    if (isUnlocked) {
-      setSelectedVideo({ id: videoId, timeStamp, maxTime, isLast });
-
-      // Update local storage
-      const data = localStorage.getItem(`video-${videoId}`);
-      let localObjData = data ? JSON.parse(data) : { completed: 0 };
-      localObjData.completed = Math.max(localObjData.completed, index + 1);
-      localStorage.setItem(`video-${videoId}`, JSON.stringify(localObjData));
-    }
+    setSelectedVideo({ id: videoId, timeStamp, maxTime, isLast, index });
   };
 
   return (

@@ -15,6 +15,8 @@ interface Chapter {
   title: string;
   time: number;
   thumbnails: Thumbnail[];
+  isCompleted: boolean;
+  isUnlocked: boolean;
 }
 
 export default function Page({ params }: { params: { slug: string } }) {

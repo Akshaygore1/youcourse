@@ -1,18 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import ChapterCard from "./Chapter";
-
-interface Thumbnail {
-  url: string;
-  width: number;
-  height: number;
-}
-
-interface Chapter {
-  title: string;
-  time: number;
-  thumbnails: Thumbnail[];
-}
+import { Chapter } from "@/types";
 
 export default function Chapterlist({
   data,
@@ -38,6 +27,8 @@ export default function Chapterlist({
           chapterIndex={index}
           totalChapters={arr.length}
           index={index}
+          isCompleted={chapter.isCompleted || false}
+          isUnlocked={index === 0 || chapter.isUnlocked || false}
         />
       ))}
     </div>

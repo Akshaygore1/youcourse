@@ -8,6 +8,8 @@ export interface Chapter {
   title: string;
   time: number;
   thumbnails: Thumbnail[];
+  isCompleted: boolean;
+  isUnlocked: boolean;
 }
 
 export interface Chapters {

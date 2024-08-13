@@ -13,6 +13,8 @@ interface Chapter {
   title: string;
   time: number;
   thumbnails: Thumbnail[];
+  isCompleted: boolean;
+  isUnlocked: boolean;
 }
 
 export default function Chaptersidebar({
@@ -24,6 +26,7 @@ export default function Chaptersidebar({
   duration: number;
   videoId: string;
 }) {
+  console.log("DATA", data);
   return (
     <div className="flex flex-col h-full">
       <div className="sticky top-0 z-10 px-4 py-2">

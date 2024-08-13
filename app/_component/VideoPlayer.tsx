@@ -12,6 +12,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import Link from "next/link";
+import { Chapter } from "@/types";
 
 interface VideoPlayerProps {
   selectedVideo: {
@@ -148,29 +149,50 @@ export default function VideoPlayer() {
   };
 
   const handleMarkAsCompleted = () => {
-    if (selectedVideo) {
-      setCompletedVideos([
-        ...completedVideos,
-        {
-          id: selectedVideo.id,
-          timeStamp: selectedVideo.timeStamp,
-          maxTime: selectedVideo.maxTime,
-          isLast: selectedVideo.isLast,
-        },
-      ]);
+    if (!selectedVideo) return;
+    const data = localStorage.getItem(`video-${selectedVideo.id}`);
+    let localObjData: {
+      chapters: Chapter[];
+      completed: number;
+      index: number;
+    } = data
+      ? JSON.parse(data)
+      : { chapters: [], completed: 0, index: selectedVideo.index };
 
-      // Update local storage
-      const data = localStorage.getItem(`video-${selectedVideo.id}`);
-      let localObjData = data ? JSON.parse(data) : { completed: 0 };
-      localObjData.completed += 1;
+    if (
+      localObjData.chapters.length > 0 &&
+      selectedVideo.index < localObjData.chapters.length
+    ) {
+      // Mark the chapter as completed
+      localObjData.chapters[selectedVideo.index] = {
+        ...localObjData.chapters[selectedVideo.index],
+        isCompleted: true,
+        isUnlocked: true,
+      };
+
+      localObjData.chapters[selectedVideo.index + 1] = {
+        ...localObjData.chapters[selectedVideo.index + 1],
+        isCompleted: false,
+        isUnlocked: true,
+      };
+
+      // Update the completed count if needed
+      localObjData.completed = localObjData.chapters.reduce(
+        (count, chapter) => (chapter.isCompleted ? count + 1 : count),
+        0
+      );
+
+      // Save the updated data back to localStorage
       localStorage.setItem(
         `video-${selectedVideo.id}`,
         JSON.stringify(localObjData)
       );
-
-      setVideoUrl(null);
     }
+
+    // Perform any additional actions, such as setting the video URL to null if needed
+    setVideoUrl(null);
   };
+
   return (
     <div className="flex flex-col gap-2 h-full w-full p-4 ">
       {videoUrl ? (
