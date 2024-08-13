@@ -148,7 +148,6 @@ export default function VideoPlayer() {
   };
 
   const handleMarkAsCompleted = () => {
-    console.log("mark as completed");
     if (selectedVideo) {
       setCompletedVideos([
         ...completedVideos,
@@ -159,7 +158,17 @@ export default function VideoPlayer() {
           isLast: selectedVideo.isLast,
         },
       ]);
-      setSelectedVideo(null);
+
+      // Update local storage
+      const data = localStorage.getItem(`video-${selectedVideo.id}`);
+      let localObjData = data ? JSON.parse(data) : { completed: 0 };
+      localObjData.completed += 1;
+      localStorage.setItem(
+        `video-${selectedVideo.id}`,
+        JSON.stringify(localObjData)
+      );
+
+      setVideoUrl(null);
     }
   };
   return (
@@ -197,9 +206,11 @@ export default function VideoPlayer() {
                 onChange={handleSeekChange}
                 className="w-full h-1 bg-gray-400 appearance-none rounded-full outline-none cursor-pointer"
                 style={{
-                  background: `linear-gradient(to right, #faf7f7 0%, #faf7f7 ${(played / (maxTime ?? duration)) * 100
-                    }%, #f7fafc ${(played / (maxTime ?? duration)) * 100
-                    }%, #f7fafc 100%)`,
+                  background: `linear-gradient(to right, #faf7f7 0%, #faf7f7 ${
+                    (played / (maxTime ?? duration)) * 100
+                  }%, #f7fafc ${
+                    (played / (maxTime ?? duration)) * 100
+                  }%, #f7fafc 100%)`,
                 }}
               />
 

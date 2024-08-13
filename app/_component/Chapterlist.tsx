@@ -23,7 +23,6 @@ export default function Chapterlist({
   duration: number;
   videoId: string;
 }) {
-  console.log("data>>", data);
   return (
     <div className="p-4 flex flex-col gap-2">
       {data.map((chapter: Chapter, index: number, arr: Chapter[]) => (
@@ -38,6 +37,7 @@ export default function Chapterlist({
           totalDuration={duration}
           chapterIndex={index}
           totalChapters={arr.length}
+          index={index}
         />
       ))}
     </div>

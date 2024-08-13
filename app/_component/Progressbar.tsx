@@ -6,20 +6,15 @@ import { useVideoStore } from "../../store/store";
 function Progressbar({ numOfChapters }: { numOfChapters: number }) {
   const [percent, setPercent] = useState(0);
   const clampedPercent = Math.min(100, Math.max(0, percent));
-  const { completedVideos, selectedVideo } = useVideoStore();
-
+  const { completedVideos, selectedVideo, videoId } = useVideoStore();
+  // console.log("completedVideos", completedVideos);
   useEffect(() => {
-    if (!selectedVideo) return;
-
-    const videoId = `video-${selectedVideo.id}`;
-    const localData = localStorage.getItem(videoId);
+    const vId = selectedVideo ? selectedVideo.id : videoId;
+    const localData = localStorage.getItem(`video-${vId}`);
     let localObjData = localData ? JSON.parse(localData) : { completed: 0 };
-
-    localObjData.completed = completedVideos.length;
-    localStorage.setItem(videoId, JSON.stringify(localObjData));
-
-    setPercent((completedVideos.length / numOfChapters) * 100);
-  }, [completedVideos, numOfChapters, selectedVideo]);
+    const completed = localObjData.completed;
+    setPercent((completed / numOfChapters) * 100);
+  }, [completedVideos, numOfChapters, selectedVideo, videoId]);
 
   return (
     <div className="w-full p-2">

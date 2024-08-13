@@ -15,6 +15,8 @@ interface VideoStore {
   setSelectedVideo: (video: Video | null) => void;
   completedVideos: Video[];
   setCompletedVideos: (videos: Video[]) => void;
+  videoId: string | null;
+  setVideoId: (videoId: string) => void;
 }
 
 export const useVideoStore = create<VideoStore>((set) => ({
@@ -25,4 +27,6 @@ export const useVideoStore = create<VideoStore>((set) => ({
   setSelectedVideo: (video) => set({ selectedVideo: video }),
   completedVideos: [],
   setCompletedVideos: (videos: Video[]) => set({ completedVideos: videos }),
+  videoId: null,
+  setVideoId: (videoId: string) => set({ videoId }),
 }));

@@ -15,6 +15,7 @@ interface ChapterCardProps {
   totalDuration: number;
   chapterIndex: number;
   totalChapters: number;
+  index: number;
 }
 
 export default function ChapterCard({
@@ -27,9 +28,14 @@ export default function ChapterCard({
   totalDuration,
   chapterIndex,
   totalChapters,
+  index,
 }: ChapterCardProps) {
   const { selectedVideo, setSelectedVideo, completedVideos } = useVideoStore();
-  const [isUnlocked, setIsUnlocked] = useState(chapterIndex === 0);
+
+  const [isUnlocked, setIsUnlocked] = useState(completedVideos.length === 0);
+  const isCompleted = completedVideos.some(
+    (video) => video.timeStamp === timeStamp
+  );
 
   useEffect(() => {
     const prevChapterCompleted =
@@ -37,6 +43,15 @@ export default function ChapterCard({
       completedVideos.some((video) => video.timeStamp === lastTimestamp);
     setIsUnlocked(prevChapterCompleted);
   }, [completedVideos, chapterIndex, lastTimestamp]);
+
+  useEffect(() => {
+    const data = localStorage.getItem(`video-${videoId}`);
+    let localObjData = data ? JSON.parse(data) : { completed: 0 };
+    const completed = localObjData.completed;
+
+    // Unlock this chapter if it's the first one or if the previous chapter is completed
+    setIsUnlocked(index === 0 || completed >= index);
+  }, [index, videoId, completedVideos]);
 
   const handleClick = (
     videoId: string,
@@ -46,17 +61,20 @@ export default function ChapterCard({
   ) => {
     if (isUnlocked) {
       setSelectedVideo({ id: videoId, timeStamp, maxTime, isLast });
+
+      // Update local storage
+      const data = localStorage.getItem(`video-${videoId}`);
+      let localObjData = data ? JSON.parse(data) : { completed: 0 };
+      localObjData.completed = Math.max(localObjData.completed, index + 1);
+      localStorage.setItem(`video-${videoId}`, JSON.stringify(localObjData));
     }
   };
 
-  const isCompleted = completedVideos.some(
-    (video) => video.timeStamp === timeStamp
-  );
-
   return (
     <div
-      className={`flex flex-row p-4 gap-4 border border-b border-white rounded-md ${!isUnlocked ? "opacity-50" : ""
-        }`}
+      className={`flex flex-row p-4 gap-4 border border-b border-white rounded-md ${
+        !isUnlocked ? "opacity-50" : ""
+      }`}
     >
       <div
         className="flex items-center justify-center cursor-pointer"
