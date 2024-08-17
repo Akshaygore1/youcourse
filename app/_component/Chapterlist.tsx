@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import ChapterCard from "./Chapter";
 import { Chapter } from "@/types";
+import { useVideoStore } from "@/store/store";
 
 export default function Chapterlist({
   data,
@@ -18,7 +19,6 @@ export default function Chapterlist({
         <ChapterCard
           title={chapter.title}
           videoId={videoId}
-          thumbnails={chapter.thumbnails[0].url}
           timeStamp={chapter.time}
           key={chapter.title}
           nextTimestamp={arr[index + 1]?.time}

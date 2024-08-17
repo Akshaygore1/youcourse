@@ -7,7 +7,6 @@ function Progressbar({ numOfChapters }: { numOfChapters: number }) {
   const [percent, setPercent] = useState(0);
   const clampedPercent = Math.min(100, Math.max(0, percent));
   const { completedVideos, selectedVideo, videoId } = useVideoStore();
-  // console.log("completedVideos", completedVideos);
   useEffect(() => {
     const vId = selectedVideo ? selectedVideo.id : videoId;
     const localData = localStorage.getItem(`video-${vId}`);

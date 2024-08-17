@@ -3,11 +3,10 @@ import Image from "next/image";
 import { formatTime } from "../utils";
 import { useVideoStore } from "../../store/store";
 import { CirclePause, CirclePlay, Check, Lock } from "lucide-react";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 interface ChapterCardProps {
   title: string;
-  thumbnails: string;
   timeStamp: number;
   nextTimestamp: number;
   lastTimestamp: number;
@@ -22,7 +21,6 @@ interface ChapterCardProps {
 
 export default function ChapterCard({
   title,
-  thumbnails,
   timeStamp,
   nextTimestamp,
   videoId,
@@ -34,7 +32,6 @@ export default function ChapterCard({
   isCompleted,
   isUnlocked,
 }: ChapterCardProps) {
-  console.log("--", isCompleted, "isUnlocked", isUnlocked);
   const { selectedVideo, setSelectedVideo, completedVideos } = useVideoStore();
 
   const handleClick = (

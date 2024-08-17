@@ -39,7 +39,6 @@ export async function getVideoInfo(id: string, options = { chapters: true }) {
         return {
           title: chapterData.title.simpleText,
           time: timeInt,
-          thumbnails: chapterData.thumbnail.thumbnails,
         };
       });
     }

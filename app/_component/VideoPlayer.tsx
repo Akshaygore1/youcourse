@@ -161,36 +161,39 @@ export default function VideoPlayer() {
 
     if (
       localObjData.chapters.length > 0 &&
-      selectedVideo.index < localObjData.chapters.length
+      selectedVideo.index + 1 < localObjData.chapters.length
     ) {
-      // Mark the chapter as completed
-      localObjData.chapters[selectedVideo.index] = {
-        ...localObjData.chapters[selectedVideo.index],
-        isCompleted: true,
-        isUnlocked: true,
-      };
+      if (localObjData.chapters[selectedVideo.index]) {
+        // Mark the chapter as completed
+        localObjData.chapters[selectedVideo.index] = {
+          ...localObjData.chapters[selectedVideo.index],
+          isCompleted: true,
+          isUnlocked: true,
+        };
 
-      localObjData.chapters[selectedVideo.index + 1] = {
-        ...localObjData.chapters[selectedVideo.index + 1],
-        isCompleted: false,
-        isUnlocked: true,
-      };
+        localObjData.chapters[selectedVideo.index + 1] = {
+          ...localObjData.chapters[selectedVideo.index + 1],
+          isCompleted: false,
+          isUnlocked: true,
+        };
 
-      // Update the completed count if needed
-      localObjData.completed = localObjData.chapters.reduce(
-        (count, chapter) => (chapter.isCompleted ? count + 1 : count),
-        0
-      );
+        // Update the completed count if needed
+        localObjData.completed = localObjData.chapters.reduce(
+          (count, chapter) => (chapter.isCompleted ? count + 1 : count),
+          0
+        );
 
-      // Save the updated data back to localStorage
-      localStorage.setItem(
-        `video-${selectedVideo.id}`,
-        JSON.stringify(localObjData)
-      );
+        // Save the updated data back to localStorage
+        localStorage.setItem(
+          `video-${selectedVideo.id}`,
+          JSON.stringify(localObjData)
+        );
+      }
     }
 
     // Perform any additional actions, such as setting the video URL to null if needed
     setVideoUrl(null);
+    setSelectedVideo(null);
   };
 
   return (

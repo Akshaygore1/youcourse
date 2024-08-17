@@ -43,7 +43,6 @@ export default function MyCourses({
       Object.keys(localStorage).filter((key) => key.startsWith("video-"))
     );
   }, [data, duration, videoId]);
-  console.log("---", storageKeys);
   return (
     <div className="flex flex-row flex-wrap gap-2 h-auto">
       {storageKeys.length > 0 ? (
