@@ -26,3 +26,9 @@ This Next.js 14 project converts long YouTube videos with timestamps into tracka
 - Clone Project
 - just do npm install
 - and npm run dev
+
+## Future Enhancements
+
+- Add support for converting YouTube playlists into courses
+- Create a dashboard for managing multiple courses
+
