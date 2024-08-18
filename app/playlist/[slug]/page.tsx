@@ -10,7 +10,5 @@ export default async function Page({ params }: { params: { slug: string } }) {
   });
 
   const json = await data.json();
-  const playlist = json.items;
-  // const playlistInfo = await getPlaylistInfo(params.slug);
-  return <div>Playlist {params.slug}</div>;
+  return <div>Playlist </div>;
 }

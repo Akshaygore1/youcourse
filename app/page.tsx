@@ -20,7 +20,8 @@ export default function Home() {
         push(`/mycourse/${videoId}`);
       }
       if (url.includes("youtube.com/playlist?list=")) {
-        const playlistId = url.split("list=")[1];
+        const playlistId = url.split("list=")[1].split("&")[0];
+        // const playlistId = url.split("list=")[1];
         push(`/playlist/${playlistId}`);
       }
     }
